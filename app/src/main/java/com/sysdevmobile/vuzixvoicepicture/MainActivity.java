@@ -2,9 +2,7 @@ package com.sysdevmobile.vuzixvoicepicture;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
@@ -39,7 +37,6 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
@@ -49,18 +46,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import static com.sysdevmobile.vuzixvoicepicture.FileUtils.deleteFilename;
+import static com.sysdevmobile.vuzixvoicepicture.FileUtils.getPublicDownloadsStorageFile;
+import static com.sysdevmobile.vuzixvoicepicture.FileUtils.writeTextToFile;
+
 public class MainActivity extends Activity implements RotationListener.rotationCallbackFn {
 
     public static final String DOWNLOADS_FOLDER = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
-    private static final String TAG = "CameraFlash_App";
-    private static final String IMAGE_FILENAME = "image.filename";
     public static final String LOG_TAG = "VoiceSample";
     public static final String CUSTOM_SDK_INTENT = "com.sysdevmobile.vuzixvoicepicture.CustomIntent";
-
     public static final int FLASH_OFF = 2001;
     public static final int FLASH_ON = 2002;
     public static final int FLASH_AUTO = 2003;
     public static final int FLASH_TORCH = 2004;
+    static final String IMAGE_FILENAME = "image.filename";
+    private static final String TAG = "CameraFlash_App";
     private static final long PREVIEW_TIME_MILLISECS = 2000;
     private final static int TAKEPICTURE_COMPLETED = 1001;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
@@ -92,63 +92,6 @@ public class MainActivity extends Activity implements RotationListener.rotationC
      */
     private MyIntentReceiver myIntentReceiver;
 
-    /**
-     * Helper method to create a file in the Downloads folder
-     * @param fileName file to be created
-     * @return File
-     */
-    public static File getPublicDownloadsStorageFile(String fileName) {
-
-        File file = null;
-        if (isExternalStorageWritable()) {
-            // Get the directory for the user's public downloads directory.
-            file = new File(DOWNLOADS_FOLDER, fileName);
-
-        } else
-            Log.d(TAG, "getPublicDownloadsStorageFile: Folder not Writable!!");
-
-        return file;
-    }
-
-    /**
-     * Check if the storage is writable
-     *
-     */
-    private static boolean isExternalStorageWritable() {
-        String state = Environment.getExternalStorageState();
-        return Environment.MEDIA_MOUNTED.equals(state);
-    }
-
-    /**
-     * creates a text file
-     * @param text text to be written
-     */
-    static void writeTextToFile(String text) {
-
-        File file = getPublicDownloadsStorageFile(IMAGE_FILENAME);
-        FileWriter fw;
-        try {
-            fw = new FileWriter(file);
-            fw.write(text);
-            fw.flush();
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Deletes a file from Download Folder
-     * @param fileName file to be deleted
-     */
-    public static void deleteFilename(String fileName) {
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName);
-        if (file.exists()) {
-            boolean st = file.delete();
-            if (st)
-                Log.d(TAG, "deleteFile() called with: fileName = [" + fileName + "], Deleting: " + file.toString());
-        }
-    }
 
     /**
      * when created we setup the layout and the speech recognition
@@ -599,12 +542,15 @@ public class MainActivity extends Activity implements RotationListener.rotationC
                             public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
                                 Integer getResult = result.get(CaptureResult.CONTROL_AE_STATE);
 
-                                if ((getResult == CaptureResult.CONTROL_AE_STATE_INACTIVE)
-                                        || (getResult == CaptureResult.CONTROL_AE_STATE_FLASH_REQUIRED)
-                                        || (getResult == CaptureResult.CONTROL_AE_STATE_CONVERGED)
-                                        || (getResult == CaptureResult.CONTROL_AE_STATE_LOCKED)) {
-                                    Log.i(TAG, "Capture called from precaptureTrigger. AE_STATE: " + getResult);
-                                    createCameraStillCapture();
+                                if (getResult != null) {
+                                    switch (getResult) {
+                                        case CaptureResult.CONTROL_AE_STATE_INACTIVE:
+                                        case CaptureResult.CONTROL_AE_STATE_FLASH_REQUIRED:
+                                        case CaptureResult.CONTROL_AE_STATE_CONVERGED:
+                                        case CaptureResult.CONTROL_AE_STATE_LOCKED:
+                                            Log.i(TAG, "Capture called from precaptureTrigger. AE_STATE: " + getResult);
+                                            createCameraStillCapture();
+                                    }
                                 }
                             }
                         }, mBackgroundHandler);
@@ -783,14 +729,4 @@ public class MainActivity extends Activity implements RotationListener.rotationC
         return LOG_TAG + ":" + this.getClass().getSimpleName() + "." + new Throwable().getStackTrace()[1].getMethodName();
     }
 
-    public class MyIntentReceiver extends BroadcastReceiver {
-
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.e(LOG_TAG, getMethodName());
-            Toast.makeText(context, "Custom Intent Detected", Toast.LENGTH_LONG).show();
-        }
-
-    }
 }

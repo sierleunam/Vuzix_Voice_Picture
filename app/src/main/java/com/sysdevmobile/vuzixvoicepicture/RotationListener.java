@@ -5,7 +5,7 @@ import android.hardware.SensorManager;
 import android.view.OrientationEventListener;
 import android.view.WindowManager;
 
-public class RotationListener {
+class RotationListener {
     /**
      * Interface for receiving callbacks from this listener class
      */
@@ -29,7 +29,7 @@ public class RotationListener {
      * @param context Context of your activity
      * @param callback rotationCallbackFn to be called when the rotation changes
      */
-    public void listen(Context context, rotationCallbackFn callback) {
+    void listen(Context context, rotationCallbackFn callback) {
         // registering the listening only once.
         stop();
         mCallback = callback;
@@ -62,7 +62,7 @@ public class RotationListener {
     /**
      * Stop receiving rotation callbacks.  Call from your onPause()
      */
-    public void stop() {
+    void stop() {
         if(mOrientationEventListener != null) {
             mOrientationEventListener.disable();
         }
