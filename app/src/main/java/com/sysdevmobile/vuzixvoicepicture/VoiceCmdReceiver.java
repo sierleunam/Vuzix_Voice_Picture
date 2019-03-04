@@ -13,7 +13,8 @@ import com.vuzix.sdk.speechrecognitionservice.VuzixSpeechClient;
 import java.util.Objects;
 
 import static android.view.KeyEvent.KEYCODE_ENTER;
-import static com.sysdevmobile.vuzixvoicepicture.MainActivity.*;
+import static com.sysdevmobile.vuzixvoicepicture.MainActivity.CUSTOM_SDK_INTENT;
+import static com.sysdevmobile.vuzixvoicepicture.MainActivity.LOG_TAG;
 
 
 /**
@@ -168,7 +169,7 @@ public class VoiceCmdReceiver extends BroadcastReceiver {
                         TriggerRecognizerToListen(true);
 //                        mMainActivity.OnListenClick();
                     }
-                    mMainActivity.RecognizerChangeCallback(isRecognizerActive);
+//                    mMainActivity.RecognizerChangeCallback(isRecognizerActive);
                 }
             }
         }

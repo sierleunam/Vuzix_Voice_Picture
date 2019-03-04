@@ -176,20 +176,20 @@ public class MainActivity extends Activity implements RotationListener.rotationC
         super.onDestroy();
     }
 
-    /**
-     * A callback for the SDK to notify us if the recognizer starts or stop listening
-     *
-     * @param isRecognizerActive boolean - true when listening
-     */
-    public void RecognizerChangeCallback(boolean isRecognizerActive) {
-        mRecognizerActive = isRecognizerActive;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-//                updateListenButtonText();
-            }
-        });
-    }
+//    /**
+//     * A callback for the SDK to notify us if the recognizer starts or stop listening
+//     *
+//     * @param isRecognizerActive boolean - true when listening
+//     */
+//    public void RecognizerChangeCallback(boolean isRecognizerActive) {
+//        mRecognizerActive = isRecognizerActive;
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+////                updateListenButtonText();
+//            }
+//        });
+//    }
 
     public int getmFlashMode() {
         return mFlashMode;
@@ -574,7 +574,6 @@ public class MainActivity extends Activity implements RotationListener.rotationC
      * Utility to translate our desired flash mode to the required API for the capture
      */
     private void setCaptureFlashMode() {
-
         switch (getmFlashMode()) {
             case FLASH_OFF:
                 mCaptureRequestBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_OFF);
@@ -590,7 +589,6 @@ public class MainActivity extends Activity implements RotationListener.rotationC
      * Utility to translate our desired flash mode to the required API for the preview
      */
     private void setPreviewFlashMode() {
-
         switch (getmFlashMode()) {
             case FLASH_OFF:
                 mCaptureRequestBuilder.set(CaptureRequest.FLASH_MODE, CameraMetadata.FLASH_MODE_OFF);
