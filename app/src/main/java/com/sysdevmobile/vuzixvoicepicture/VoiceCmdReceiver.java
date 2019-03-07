@@ -143,8 +143,10 @@ public class VoiceCmdReceiver extends BroadcastReceiver {
                             mMainActivity.onClickTakePicture();
                             break;
                         case MATCH_CANCEL:
-                           mMainActivity.finish();
-                           break;
+
+                            mMainActivity.finish();
+
+                            break;
                         case MATCH_HELP:
                             mMainActivity.popupToast("Available commands: OK, Take Picture, Cancel");
                             break;

@@ -60,8 +60,8 @@ public class MainActivity extends Activity implements RotationListener.rotationC
     public static final int FLASH_AUTO = 2003;
     public static final int FLASH_TORCH = 2004;
     static final String IMAGE_FILENAME = "image.filename";
-    private static final String TAG = "CameraFlash_App";
-    private static final long PREVIEW_TIME_MILLISECS = 2000;
+    private static final String TAG = "MainActivity";
+    private static final long PREVIEW_TIME_MILLISECS = 3000;
     private final static int TAKEPICTURE_COMPLETED = 1001;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
     private final int[] RotationConversion = {  /* ROTATION_0 = 0 */      0,
@@ -85,13 +85,18 @@ public class MainActivity extends Activity implements RotationListener.rotationC
     private Handler mBackgroundPreviewHandler;
     private HandlerThread mBackgroundPreviewThread;
     private Handler mHandler;
-
-
     /**
      * You may prefer using explicit intents for each recognized phrase. This receiver demonstrates that.
      */
     private MyIntentReceiver myIntentReceiver;
 
+    public int getmFlashMode() {
+        return mFlashMode;
+    }
+
+    public void setmFlashMode(int mFlashMode) {
+        this.mFlashMode = mFlashMode;
+    }
 
     /**
      * when created we setup the layout and the speech recognition
@@ -172,31 +177,9 @@ public class MainActivity extends Activity implements RotationListener.rotationC
     protected void onDestroy() {
         unregisterReceiver(myIntentReceiver);
 
+        mVoiceCmdReceiver.TriggerRecognizerToListen(false);
         mVoiceCmdReceiver.unregister();
         super.onDestroy();
-    }
-
-//    /**
-//     * A callback for the SDK to notify us if the recognizer starts or stop listening
-//     *
-//     * @param isRecognizerActive boolean - true when listening
-//     */
-//    public void RecognizerChangeCallback(boolean isRecognizerActive) {
-//        mRecognizerActive = isRecognizerActive;
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-////                updateListenButtonText();
-//            }
-//        });
-//    }
-
-    public int getmFlashMode() {
-        return mFlashMode;
-    }
-
-    public void setmFlashMode(int mFlashMode) {
-        this.mFlashMode = mFlashMode;
     }
 
     /**
@@ -473,6 +456,7 @@ public class MainActivity extends Activity implements RotationListener.rotationC
                 private void save(byte[] bytes) throws IOException {
                     try (OutputStream output = new FileOutputStream(file)) {
                         output.write(bytes);
+                        writeTextToFile(imageFileName);
                     }
                 }
 
@@ -480,7 +464,6 @@ public class MainActivity extends Activity implements RotationListener.rotationC
                     Message msg = mHandler.obtainMessage();
                     msg.what = TAKEPICTURE_COMPLETED;
                     mHandler.sendMessage(msg);
-                    writeTextToFile(imageFileName);
                 }
 
             }, mBackgroundHandler);
