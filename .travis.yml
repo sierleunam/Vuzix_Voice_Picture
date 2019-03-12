@@ -29,5 +29,5 @@ android:
     - extra-android-support
 
 script:
-  - ./gradlew clean installDebug
+  - ./gradlew clean
   - ./gradlew check
