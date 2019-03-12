@@ -54,7 +54,7 @@ public class MainActivity extends Activity implements RotationListener.rotationC
 
     public static final String DOWNLOADS_FOLDER = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString();
     public static final String LOG_TAG = "VoiceSample";
-    public static final String CUSTOM_SDK_INTENT = "com.sysdevmobile.vuzixvoicepicture.CustomIntent";
+    public static final String CUSTOM_SDK_INTENT = "com.sysdevmobile.vuzixvoicepicture.takepicture";
     public static final int FLASH_OFF = 2001;
     public static final int FLASH_ON = 2002;
     public static final int FLASH_AUTO = 2003;
@@ -68,9 +68,7 @@ public class MainActivity extends Activity implements RotationListener.rotationC
             /* ROTATION_90 = 1; */   90,
             /* ROTATION_180 = 2; */ 180,
             /* ROTATION_270 = 3; */ 270};
-    public boolean mRecognizerActive = true;
     Button mTakingButton;
-    VoiceCmdReceiver mVoiceCmdReceiver;
     private TextureView mTextureView;
     private CameraDevice mCameraDevice;
     private CameraManager mCameraManager;
@@ -110,16 +108,12 @@ public class MainActivity extends Activity implements RotationListener.rotationC
 
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 
-
-        // Create the voice command receiver class
-        mVoiceCmdReceiver = new VoiceCmdReceiver(this);
-
         // Now register another intent handler to demonstrate intents sent from the service
-        myIntentReceiver = new MyIntentReceiver();
+        myIntentReceiver = new MyIntentReceiver(this);
         registerReceiver(myIntentReceiver, new IntentFilter(CUSTOM_SDK_INTENT));
 
         // Handle taking the picture. Disable the button while it processes.
-        mTakingButton = (Button) findViewById(R.id.btn_takepicture);
+        mTakingButton = findViewById(R.id.btn_takepicture);
         mTakingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,7 +122,7 @@ public class MainActivity extends Activity implements RotationListener.rotationC
         });
 
         // Set up the preview
-        mTextureView = (TextureView) findViewById(R.id.texture);
+        mTextureView = findViewById(R.id.texture);
         mTextureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
@@ -166,8 +160,6 @@ public class MainActivity extends Activity implements RotationListener.rotationC
         deleteFilename(IMAGE_FILENAME);
         mRotationListener = new RotationListener();
 
-        // Request the new state
-        mVoiceCmdReceiver.TriggerRecognizerToListen(mRecognizerActive);
     }
 
     /**
@@ -176,9 +168,6 @@ public class MainActivity extends Activity implements RotationListener.rotationC
     @Override
     protected void onDestroy() {
         unregisterReceiver(myIntentReceiver);
-
-        mVoiceCmdReceiver.TriggerRecognizerToListen(false);
-        mVoiceCmdReceiver.unregister();
         super.onDestroy();
     }
 
