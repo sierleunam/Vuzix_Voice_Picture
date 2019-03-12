@@ -148,16 +148,16 @@ public class MainActivity extends Activity implements RotationListener.rotationC
 
             @Override
             public void handleMessage(Message msg) {
-                if (msg.what == TAKEPICTURE_COMPLETED) {
+                if (msg.what == TAKEPICTURE_COMPLETED)
                     onPictureComplete();
-                } else {
+                else
                     super.handleMessage(msg);
-                }
             }
         };
 
-        // Create the listener to handle M300 orientation changes
         deleteFilename(IMAGE_FILENAME);
+
+        // Create the listener to handle M300 orientation changes
         mRotationListener = new RotationListener();
 
     }
@@ -408,6 +408,7 @@ public class MainActivity extends Activity implements RotationListener.rotationC
             final int imageHeight = 1080;       // image size
 
             List<Surface> outputSurfaces = new ArrayList<>();
+
             // Add an output surface to view the result of the photograph in place of the preview
             SurfaceTexture texture = mTextureView.getSurfaceTexture();
             texture.setDefaultBufferSize(640, 360); // preview size
@@ -679,24 +680,4 @@ public class MainActivity extends Activity implements RotationListener.rotationC
         inflater.inflate(R.menu.menu_main, menu);
         return true;
     }
-
-    /**
-     * Helper to show a toast
-     *
-     * @param iStr String message to place in toast
-     */
-    void popupToast(String iStr) {
-        Toast myToast = Toast.makeText(MainActivity.this, iStr, Toast.LENGTH_LONG);
-        myToast.show();
-    }
-
-    /**
-     * Utility to get the name of the current method for logging
-     *
-     * @return String name of the current method
-     */
-    public String getMethodName() {
-        return LOG_TAG + ":" + this.getClass().getSimpleName() + "." + new Throwable().getStackTrace()[1].getMethodName();
-    }
-
 }

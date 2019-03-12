@@ -25,10 +25,8 @@ class FileUtils {
         if (isExternalStorageWritable()) {
             // Get the directory for the user's public downloads directory.
             file = new File(DOWNLOADS_FOLDER, fileName);
-
         } else
             Log.d(TAG, "getPublicDownloadsStorageFile: Folder not Writable!!");
-
         return file;
     }
 
