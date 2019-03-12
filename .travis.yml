@@ -24,7 +24,6 @@ android:
     - platform-tools
     - tools
     - build-tools-$ANDROID_BUILD_TOOLS_VERSION
-    - android-22
     - android-$ANDROID_API_LEVEL
     - android-$ANDROID_EMU_API_LEVEL
     - extra-android-support
